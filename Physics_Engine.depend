@@ -1,6 +1,8 @@
 # depslib dependency file v1.0
-1684272188 source:c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\main.c
+1684272762 source:c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\main.c
 	<SDL2/SDL.h>
+	<stdio.h>
+	<stdbool.h>
 
 1680720481 c:\msys64\mingw64\x86_64-w64-mingw32\include\sdl2\sdl.h
 	"SDL_main.h"

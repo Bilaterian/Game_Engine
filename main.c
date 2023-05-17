@@ -1,4 +1,7 @@
 #include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const int MAX_PARTICLES = 255;
@@ -13,7 +16,7 @@ typedef struct {
 } Particle;
 
 typedef struct {
-    Particle particles[255];
+    Particle particles[1];
     int count;
 } Object;
 
@@ -29,6 +32,11 @@ void updatePosition(Object* object, float deltaTime) {
 
 void updateVelocity(Object* object, float deltaTime) {
     // Update velocity based on acceleration, collisions, etc.
+    for (int i = 0; i < object->count; i++) {
+        object->particles[i].velocity.x += 0.03f * deltaTime;
+        object->particles[i].velocity.y += 0.03f * deltaTime;
+        object->particles[i].velocity.z += 0.03f * deltaTime;
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -43,14 +51,12 @@ int main(int argc, char* argv[]) {
     Object *object = (Object *)malloc(sizeof(Object));
     object->count = 1;
     Uint32 previousTicks = SDL_GetTicks();
+    bool quit = false;
     // Game loop will go here
-    while (1) {
+    while (quit == false) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                SDL_DestroyRenderer(renderer);
-                SDL_DestroyWindow(window);
-                SDL_Quit();
-                return 0;
+                quit = true;
             }
             else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
@@ -68,23 +74,26 @@ int main(int argc, char* argv[]) {
                     break;
                 }
             }
+
+            Uint32 currentTicks = SDL_GetTicks();
+            float deltaTime = (currentTicks - previousTicks) / 1000.0f; // Convert to seconds
+            previousTicks = currentTicks;
+
+            printf("%d deltaTime:%f\n", currentTicks, deltaTime);
+
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
+            SDL_RenderClear(renderer);
+
+            // Update the physics simulation
+            updateVelocity(object, deltaTime);
+            updatePosition(object, deltaTime);
+
+            // Render the scene
+
+            SDL_RenderPresent(renderer);
         }
-        Uint32 currentTicks = SDL_GetTicks();
-        float deltaTime = (currentTicks - previousTicks) / 1000.0f; // Convert to seconds
-        previousTicks = currentTicks;
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
-        SDL_RenderClear(renderer);
-
-        // Update the physics simulation
-        updateVelocity(object, deltaTime);
-        updatePosition(object, deltaTime);
-
-        // Render the scene
-
-        SDL_RenderPresent(renderer);
     }
-
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

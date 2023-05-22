@@ -44,9 +44,9 @@ void updatePosition(Object* object, float deltaTime) {
 void updateVelocity(Object* object, float deltaTime) {
     // Update velocity based on acceleration, collisions, etc.
     for (int i = 0; i < object->count; i++) {
-        object->particles[i].velocity.x += 0.03f * deltaTime;
-        object->particles[i].velocity.y += 0.03f * deltaTime;
-        object->particles[i].velocity.z += 0.03f * deltaTime;
+        object->particles[i].velocity.x *= 0.3f * deltaTime;
+        object->particles[i].velocity.y *= 0.3f * deltaTime;
+        object->particles[i].velocity.z *= 0.3f * deltaTime;
     }
 }
 
@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
             SDL_RenderClear(renderer);
 
             // Update the physics simulation
-            updateVelocity(object, deltaTime);
+            //updateVelocity(object, deltaTime);
             updatePosition(object, deltaTime);
 
             renderObject(object, renderer);

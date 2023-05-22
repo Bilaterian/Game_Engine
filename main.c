@@ -20,6 +20,17 @@ typedef struct {
     int count;
 } Object;
 
+void renderObject(Object* object, SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White color for objects
+    int size = 100;
+    for (int i = 0; i < object->count; i++) {
+        int x = (int)object->particles[i].position.x;
+        int y = (int)object->particles[i].position.y;
+        int size = 10; // Adjust the size of the rendered object
+        SDL_Rect rect = { x, y, size, size };
+        SDL_RenderFillRect(renderer, &rect);
+    }
+}
 
 
 void updatePosition(Object* object, float deltaTime) {
@@ -79,8 +90,6 @@ int main(int argc, char* argv[]) {
             float deltaTime = (currentTicks - previousTicks) / 1000.0f; // Convert to seconds
             previousTicks = currentTicks;
 
-            printf("%d deltaTime:%f\n", currentTicks, deltaTime);
-
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
             SDL_RenderClear(renderer);
 
@@ -88,7 +97,7 @@ int main(int argc, char* argv[]) {
             updateVelocity(object, deltaTime);
             updatePosition(object, deltaTime);
 
-            // Render the scene
+            renderObject(object, renderer);
 
             SDL_RenderPresent(renderer);
         }

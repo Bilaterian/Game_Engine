@@ -1,6 +1,9 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <ctype.h>
+#include "data_types.h"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
@@ -22,11 +25,10 @@ typedef struct {
 
 void renderObject(Object* object, SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White color for objects
-    int size = 100;
+    int size = 10;
     for (int i = 0; i < object->count; i++) {
         int x = (int)object->particles[i].position.x;
         int y = (int)object->particles[i].position.y;
-        int size = 10; // Adjust the size of the rendered object
         SDL_Rect rect = { x, y, size, size };
         SDL_RenderFillRect(renderer, &rect);
     }

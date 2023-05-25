@@ -3,17 +3,15 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <ctype.h>
+#include <time.h>
 #include "data_types.h"
 
 const int MAX_PARTICLES = 255;
 
-typedef struct {
-    float x, y, z;
-} Vector3;
 
 typedef struct {
-    Vector3 position;
-    Vector3 velocity;
+    vector3 position;
+    vector3 velocity;
 } Particle;
 
 typedef struct {
@@ -65,6 +63,25 @@ int main(int argc, char* argv[]) {
         object->count = 1;
         object->particles[0].position.x = 0;
         object->particles[0].position.y = 0;
+    }
+
+    time_t t;
+    srand((unsigned) time(&t));
+
+    wall *walls = (wall *)malloc(sizeof(wall) * 5);
+
+    for(int i = 0; i < 5; i++){
+        walls[i].a.x = (float)(rand() % 256);
+        walls[i].a.y = (float)(rand() % 256);
+        walls[i].b.x = (float)(rand() % 256);
+        walls[i].b.y = (float)(rand() % 256);
+
+        walls[i].portal = 0;
+        walls[i].id = i;
+    }
+
+    for(int i = 0; i < 5; i++){
+        printf("(%f, %f), (%f, %f)\n", walls[i].a.x, walls[i].a.y, walls[i].b.x, walls[i].b.y);
     }
 
     Uint32 previousTicks = SDL_GetTicks();

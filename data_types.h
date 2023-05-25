@@ -9,28 +9,39 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-typedef struct v2{
+const int MAX_RAY_DIST = 128;
+
+
+typedef struct {
     float x;
     float y;
 }vector2;
 
-typedef struct v3{
+typedef struct {
     float x;
     float y;
     float z;
 }vector3;
 
-typedef struct w{
+typedef struct {
+    int r = 255;
+    int g = 255;
+    int b = 255;
+    int a = 255;
+}color;
+
+typedef struct {
     vector2 a, b;
     int portal;
+    int id;
+    color wallColor;
 }wall;
 
-typedef struct s{
+typedef struct {
     int id;
-    int firstWall;
+    wall *walls;
     int numWalls;
     float floor;
     float ceiling;
 }sector;
-
 

@@ -29,6 +29,7 @@ void renderObject(Object* object, SDL_Renderer* renderer) {
     for (int i = 0; i < object->count; i++) {
         int x = (int)object->particles[i].position.x;
         int y = (int)object->particles[i].position.y;
+        printf("%lf %lf\n", object->particles[i].position.x, object->particles[i].position.y);
         SDL_Rect rect = { x, y, size, size };
         SDL_RenderFillRect(renderer, &rect);
     }
@@ -62,7 +63,13 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     Object *object = (Object *)malloc(sizeof(Object));
-    object->count = 1;
+
+    {
+        object->count = 1;
+        object->particles[0].position.x = 0;
+        object->particles[0].position.y = 0;
+    }
+
     Uint32 previousTicks = SDL_GetTicks();
     bool quit = false;
     // Game loop will go here

@@ -6,6 +6,8 @@
 #endif // DATA_TYPES_H_INCLUDED
 #include <SDL2/SDL.h>
 
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
 typedef struct v2{
     float x;

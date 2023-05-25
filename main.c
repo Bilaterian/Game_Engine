@@ -5,8 +5,6 @@
 #include <ctype.h>
 #include "data_types.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
 const int MAX_PARTICLES = 255;
 
 typedef struct {
@@ -29,7 +27,6 @@ void renderObject(Object* object, SDL_Renderer* renderer) {
     for (int i = 0; i < object->count; i++) {
         int x = (int)object->particles[i].position.x;
         int y = (int)object->particles[i].position.y;
-        printf("%lf %lf\n", object->particles[i].position.x, object->particles[i].position.y);
         SDL_Rect rect = { x, y, size, size };
         SDL_RenderFillRect(renderer, &rect);
     }

@@ -7,7 +7,15 @@
 #include "data_types.h"
 
 const int MAX_PARTICLES = 255;
+const float pi = 3.141592653;
 
+inline float toDeg(float rad){
+    return rad * (180.0 / pi);
+}
+
+inline float toRad(float deg){
+    return deg * (pi / 180.0);
+}
 
 typedef struct {
     vector3 position;
@@ -71,10 +79,10 @@ int main(int argc, char* argv[]) {
     wall *walls = (wall *)malloc(sizeof(wall) * 5);
 
     for(int i = 0; i < 5; i++){
-        walls[i].a.x = (float)(rand() % 256);
-        walls[i].a.y = (float)(rand() % 256);
-        walls[i].b.x = (float)(rand() % 256);
-        walls[i].b.y = (float)(rand() % 256);
+        walls[i].a.x = (float)(rand() % 256) - 128.0;
+        walls[i].a.y = (float)(rand() % 256) - 128.0;
+        walls[i].b.x = (float)(rand() % 256) - 128.0;
+        walls[i].b.y = (float)(rand() % 256) - 128.0;
 
         walls[i].portal = 0;
         walls[i].id = i;

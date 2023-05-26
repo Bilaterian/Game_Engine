@@ -88,23 +88,24 @@ int main(int argc, char* argv[]) {
     bool quit = false;
     // Game loop will go here
     while (quit == false) {
+        vector3 camera;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 quit = true;
             }
             else if (event.type == SDL_KEYDOWN) {
-                switch (event.key.keysym.sym) {
+                switch (event.key.keysym.sym) {//will be used for camera movement
                     case SDLK_UP:
-                    object->particles[0].velocity.y -= 0.1f; // Adjust the velocity change as needed
+                        camera.y += 1.0;
                     break;
                     case SDLK_DOWN:
-                    object->particles[0].velocity.y += 0.1f;
+                        camera.y -= 1.0;
                     break;
                     case SDLK_LEFT:
-                    object->particles[0].velocity.x -= 0.1f;
+                        camera.x -= 1.0;
                     break;
                     case SDLK_RIGHT:
-                    object->particles[0].velocity.x += 0.1f;
+                        camera.x += 1.0;
                     break;
                 }
             }
@@ -116,9 +117,9 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
             SDL_RenderClear(renderer);
 
-            // Update the physics simulation
+            //Update the physics simulation
             //updateVelocity(object, deltaTime);
-            updatePosition(object, deltaTime);
+            //updatePosition(object, deltaTime);
 
             renderObject(object, renderer);
 

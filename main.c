@@ -17,6 +17,17 @@ inline float toRad(float deg){
     return deg * (pi / 180.0);
 }
 
+float angleLoop(float deg){
+    if(deg >= 360.0){
+        return deg - 360.0;
+    }
+    else if(deg <= 0.0){
+        return deg + 360.0;
+    }
+
+    return deg;
+}
+
 typedef struct {
     vector3 position;
     vector3 velocity;

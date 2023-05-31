@@ -24,10 +24,10 @@ typedef struct {
 }vector3;
 
 typedef struct {
-    int r = 255;
-    int g = 255;
-    int b = 255;
-    int a = 255;
+    int r;
+    int g;
+    int b;
+    int a;
 }color;
 
 typedef struct {

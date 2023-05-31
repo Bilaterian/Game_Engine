@@ -1,9 +1,17 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_timer.h>
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <ctype.h>
 #include <time.h>
+
 #include "data_types.h"
 
 const int MAX_PARTICLES = 255;
@@ -33,41 +41,15 @@ typedef struct {
     vector3 velocity;
 } Particle;
 
-typedef struct {
-    Particle particles[1];
-    int count;
-} Object;
-
-void renderObject(Object* object, SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White color for objects
-    int size = 10;
-    for (int i = 0; i < object->count; i++) {
-        int x = (int)object->particles[i].position.x;
-        int y = (int)object->particles[i].position.y;
-        SDL_Rect rect = { x, y, size, size };
-        SDL_RenderFillRect(renderer, &rect);
-    }
-}
-
-
-void updatePosition(Object* object, float deltaTime) {
-    for (int i = 0; i < object->count; i++) {
-        object->particles[i].position.x += object->particles[i].velocity.x * deltaTime;
-        object->particles[i].position.y += object->particles[i].velocity.y * deltaTime;
-        object->particles[i].position.z += object->particles[i].velocity.z * deltaTime;
-    }
-}
-
-void updateVelocity(Object* object, float deltaTime) {
-    // Update velocity based on acceleration, collisions, etc.
-    for (int i = 0; i < object->count; i++) {
-        object->particles[i].velocity.x *= 0.3f * deltaTime;
-        object->particles[i].velocity.y *= 0.3f * deltaTime;
-        object->particles[i].velocity.z *= 0.3f * deltaTime;
-    }
-}
 
 int main(int argc, char* argv[]) {
+    /* Information about the current video settings. */
+    const SDL_VideoInfo* info = NULL;
+    /* Color depth in bits of our window. */
+    int bpp = 0;
+    /* Flags we will pass into SDL_SetVideoMode. */
+    int flags = 0;
+
     SDL_Event event;
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* window = SDL_CreateWindow("Physics Engine",
@@ -76,13 +58,6 @@ int main(int argc, char* argv[]) {
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    Object *object = (Object *)malloc(sizeof(Object));
-
-    {
-        object->count = 1;
-        object->particles[0].position.x = 0;
-        object->particles[0].position.y = 0;
-    }
 
     time_t t;
     srand((unsigned) time(&t));
@@ -99,9 +74,6 @@ int main(int argc, char* argv[]) {
         walls[i].id = i;
     }
 
-    for(int i = 0; i < 5; i++){
-        printf("(%f, %f), (%f, %f)\n", walls[i].a.x, walls[i].a.y, walls[i].b.x, walls[i].b.y);
-    }
 
     Uint32 previousTicks = SDL_GetTicks();
     bool quit = false;
@@ -115,16 +87,16 @@ int main(int argc, char* argv[]) {
             else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {//will be used for camera movement
                     case SDLK_UP:
-                        camera.y += 1.0;
+
                     break;
                     case SDLK_DOWN:
-                        camera.y -= 1.0;
+
                     break;
                     case SDLK_LEFT:
-                        camera.x -= 1.0;
+
                     break;
                     case SDLK_RIGHT:
-                        camera.x += 1.0;
+
                     break;
                 }
             }
@@ -136,11 +108,7 @@ int main(int argc, char* argv[]) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
             SDL_RenderClear(renderer);
 
-            //Update the physics simulation
-            //updateVelocity(object, deltaTime);
-            //updatePosition(object, deltaTime);
-
-            renderObject(object, renderer);
+            //draw here
 
             SDL_RenderPresent(renderer);
         }

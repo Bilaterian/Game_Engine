@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_opengl.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -11,18 +12,16 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <time.h>
+#include <math.h>
 
 #include "data_types.h"
 
-const int MAX_PARTICLES = 255;
-const float pi = 3.141592653;
-
 inline float toDeg(float rad){
-    return rad * (180.0 / pi);
+    return rad * (180.0 / M_PI);
 }
 
 inline float toRad(float deg){
-    return deg * (pi / 180.0);
+    return deg * (M_PI / 180.0);
 }
 
 float angleLoop(float deg){
@@ -55,6 +54,8 @@ int main(int argc, char* argv[]) {
     SDL_Window* window = SDL_CreateWindow("Physics Engine",
     SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
     SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+
+    info = SDL_GetVideoInfo( );
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 

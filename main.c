@@ -101,18 +101,17 @@ int main(int argc, char* argv[]) {
             float deltaTime = (currentTicks - previousTicks) / 1000.0f; // Convert to seconds
             previousTicks = currentTicks;
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
-            SDL_RenderClear(renderer);
-
             //draw here
 
-            SDL_RenderPresent(renderer);
         }
 
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    glViewport(0, 0, WinWidth, WinHeight);
+    glClearColor(1.f, 0.f, 1.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    SDL_GL_SwapWindow(Window);
     SDL_Quit();
     return 0;
 }

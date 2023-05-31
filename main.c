@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_opengl.h>
 
 #include <GL/gl.h>
@@ -42,20 +43,14 @@ typedef struct {
 
 
 int main(int argc, char* argv[]) {
-    /* Information about the current video settings. */
-    const SDL_VideoInfo* info = NULL;
-    /* Color depth in bits of our window. */
-    int bpp = 0;
-    /* Flags we will pass into SDL_SetVideoMode. */
-    int flags = 0;
 
     SDL_Event event;
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window* window = SDL_CreateWindow("Physics Engine",
+    SDL_Window* window = SDL_CreateWindow("Raycaster",
     SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
     SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-    info = SDL_GetVideoInfo( );
+    SDL_GLContext Context = SDL_GL_CreateContext(window);
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 

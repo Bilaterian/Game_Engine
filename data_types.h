@@ -6,8 +6,7 @@
 #endif // DATA_TYPES_H_INCLUDED
 #include <SDL2/SDL.h>
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+
 
 const int MAX_RAY_DIST = 128;
 
@@ -44,4 +43,9 @@ typedef struct {
     float floor;
     float ceiling;
 }sector;
+
+typedef struct {
+    vector3 camera;
+
+} player;
 

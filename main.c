@@ -3,10 +3,6 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_opengl.h>
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -15,6 +11,7 @@
 #include <math.h>
 
 #include "data_types.h"
+#include "functions.h"
 
 inline float toDeg(float rad){
     return rad * (180.0 / M_PI);
@@ -37,74 +34,46 @@ float angleLoop(float deg){
 
 int main(int argc, char* argv[]) {
 
-    SDL_Event event;
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window* window = SDL_CreateWindow("Raycaster",
-    SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-    SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
-
-    SDL_GLContext Context = SDL_GL_CreateContext(window);
-
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-
-    time_t t;
-    srand((unsigned) time(&t));
-
-    wall *walls = (wall *)malloc(sizeof(wall) * 5);
-
-    for(int i = 0; i < 5; i++){
-        walls[i].a.x = (float)(rand() % 256) - 128.0;
-        walls[i].a.y = (float)(rand() % 256) - 128.0;
-        walls[i].b.x = (float)(rand() % 256) - 128.0;
-        walls[i].b.y = (float)(rand() % 256) - 128.0;
-
-        walls[i].portal = 0;
-        walls[i].id = i;
+    if(!init()){
+        printf("Failed to initialize!\n");
     }
+    else{
+        //Main loop flag
+		bool quit = false;
 
-    Uint32 previousTicks = SDL_GetTicks();
-    bool quit = false;
-    // Game loop will go here
-    while (quit == false) {
-        vector3 camera;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                quit = true;
-            }
-            else if (event.type == SDL_KEYDOWN) {
-                switch (event.key.keysym.sym) {//will be used for camera movement
-                    case SDLK_UP:
+		//Event handler
+		SDL_Event event;
 
-                    break;
-                    case SDLK_DOWN:
+		//Enable text input
+		//SDL_StartTextInput();
 
-                    break;
-                    case SDLK_LEFT:
-
-                    break;
-                    case SDLK_RIGHT:
-
-                    break;
+        while(!quit){ //game loop
+            while (SDL_PollEvent(&event)) {
+                if (event.type == SDL_QUIT) {
+                    quit = true;
                 }
+                else if (event.type == SDL_KEYDOWN) {
+                    switch (event.key.keysym.sym) {//will be used for camera movement
+                        case SDLK_UP:
+
+                        break;
+                        case SDLK_DOWN:
+
+                        break;
+                        case SDLK_LEFT:
+
+                        break;
+                        case SDLK_RIGHT:
+
+                        break;
+                    }
+                }
+                //draw here
+
+
             }
-
-            Uint32 currentTicks = SDL_GetTicks();
-            float deltaTime = (currentTicks - previousTicks) / 1000.0f; // Convert to seconds
-            previousTicks = currentTicks;
-
-            //draw here
-
-
-
         }
     }
-
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    glClearColor(1.f, 0.f, 1.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    SDL_GL_SwapWindow(window);
-    SDL_Quit();
-    return 0;
+    close();
+	return 0;
 }

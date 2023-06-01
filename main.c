@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_opengl.h>
 
 #include <GL/gl.h>
@@ -36,12 +35,6 @@ float angleLoop(float deg){
     return deg;
 }
 
-typedef struct {
-    vector3 position;
-    vector3 velocity;
-} Particle;
-
-
 int main(int argc, char* argv[]) {
 
     SDL_Event event;
@@ -69,7 +62,6 @@ int main(int argc, char* argv[]) {
         walls[i].portal = 0;
         walls[i].id = i;
     }
-
 
     Uint32 previousTicks = SDL_GetTicks();
     bool quit = false;

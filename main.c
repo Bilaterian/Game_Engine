@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* window = SDL_CreateWindow("Raycaster",
     SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-    SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
 
     SDL_GLContext Context = SDL_GL_CreateContext(window);
 
@@ -103,15 +103,16 @@ int main(int argc, char* argv[]) {
 
             //draw here
 
-        }
 
+
+        }
     }
 
-    glViewport(0, 0, WinWidth, WinHeight);
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glClearColor(1.f, 0.f, 1.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    SDL_GL_SwapWindow(Window);
+    SDL_GL_SwapWindow(window);
     SDL_Quit();
     return 0;
 }

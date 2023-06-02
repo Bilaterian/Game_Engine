@@ -31,6 +31,7 @@ typedef struct {
 
 typedef struct {
     vector2 a, b;
+    float height;
     int portal;
     int id;
     color wallColor;

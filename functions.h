@@ -9,10 +9,13 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+
 #include <stdio.h>
+#include <math.h>
 #include <stdbool.h>
-bool init();
+inline float toDeg(float rad);
 
-bool initGL();
+inline float toRad(float deg);
 
-void close();
+float angleLoop(float deg);
+

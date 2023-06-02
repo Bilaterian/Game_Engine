@@ -1,15 +1,11 @@
 # depslib dependency file v1.0
-1685648306 source:c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\main.c
+1685718645 source:c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\main.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_mixer.h>
 	<SDL2/SDL_opengl.h>
-	<stdio.h>
-	<stdbool.h>
 	<stdint.h>
 	<ctype.h>
-	<time.h>
-	<math.h>
 	"data_types.h"
 	"functions.h"
 
@@ -432,15 +428,16 @@
 1685638003 c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\data_types.h
 	<SDL2/SDL.h>
 
-1685648281 c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\functions.h
+1685718981 c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\functions.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_opengl.h>
 	<GL/gl.h>
 	<GL/glu.h>
 	<GL/glut.h>
 	<stdio.h>
+	<math.h>
 	<stdbool.h>
 
-1685638031 source:c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\functions.c
+1685719189 source:c:\lance_data\coding\projects\sdl test\physics engine\physics_engine\functions.c
 	"functions.h"
 

@@ -111,10 +111,6 @@ void close(){
 	SDL_Quit();
 }
 
-void update(){
-	//No per frame update needed
-}
-
 int main(int argc, char* argv[]) {
 
     if(!init()){

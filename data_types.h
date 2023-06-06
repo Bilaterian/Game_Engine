@@ -4,8 +4,6 @@
 
 
 #endif // DATA_TYPES_H_INCLUDED
-#include <SDL2/SDL.h>
-
 
 
 const int MAX_RAY_DIST = 128;

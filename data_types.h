@@ -8,6 +8,15 @@
 
 const int MAX_RAY_DIST = 128;
 
+typedef struct{
+ int fr1;
+ int fr2;           //frame 1 frame 2, to create constant frame rate
+}time;
+
+typedef struct{         //save sin cos in values 0-360 degrees;
+    float cos[360];
+    float sin[360];
+}math;
 
 typedef struct {
     float x;
@@ -30,8 +39,6 @@ typedef struct {
 typedef struct {
     vector2 a, b;
     float height;
-    int portal;
-    int id;
     color wallColor;
 }wall;
 
@@ -43,8 +50,9 @@ typedef struct {
     float ceiling;
 }sector;
 
-typedef struct {
-    vector3 camera;
-
-} player;
+typedef struct{
+    int x, y, z;        //player position. Z is up
+    int a;              //player angle of rotation left right
+    int l;              //variable to look up and down
+}player;
 

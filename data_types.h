@@ -38,20 +38,20 @@ typedef struct {
 
 typedef struct {
     vector2 a, b;
-    float height;
     color wallColor;
 }wall;
 
 typedef struct {
-    int id;
     wall *walls;
     int numWalls;
     float floor;
     float ceiling;
+    color floorColor;
+    color ceilingColor;
 }sector;
 
 typedef struct{
-    int x, y, z;        //player position. Z is up
+    vector3 xyz;        //player position. Z is up
     int a;              //player angle of rotation left right
     int l;              //variable to look up and down
 }player;

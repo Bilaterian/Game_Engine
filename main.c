@@ -46,21 +46,38 @@ color getColor(int c){
     return returnColor;
 }
 
-void display()
-{int x,y;
- if(T.fr1 - T.fr2 >= 50)                        //only draw 20 frames/second
- {
-  clearBackground();
-  movePlayer();
-  draw3D();
+void pixel(int x,int y, int c){
+    color colour = getColor(int c);
+    //alter how pixels are drawn here
+    glColor3ub(colour.r, colour.g, colour.b);
+    glBegin(GL_POINTS);
+    glVertex2i((x * pixelScale) + 2, (y * pixelScale) + 2);
+    glEnd();
+}
 
-  T.fr2 = T.fr1;
-  glutSwapBuffers();
-  glutReshapeWindow(GLSW, GLSH);             //prevent window scaling
- }
+void clearBackground(){     //clear background color
+    int x, y;
+    for(y=0;y<SH;y++){
+        for(x=0;x<SW;x++){
+            pixel(x,y,8);
+        }
+    }
+}
 
- T.fr1=glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
- glutPostRedisplay();
+void display(){
+    int x,y;
+    if(T.fr1 - T.fr2 >= 50){                        //only draw 20 frames/second
+        clearBackground();
+        movePlayer();
+        draw3D();
+
+        T.fr2 = T.fr1;
+        glutSwapBuffers();
+        glutReshapeWindow(GLSW, GLSH);             //prevent window scaling
+    }
+
+    T.fr1 = glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
+    glutPostRedisplay();
 }
 
 int loadSectors[] = {

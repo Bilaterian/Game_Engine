@@ -29,6 +29,7 @@ const int SCREEN_HEIGHT = 480;
 math M;
 player P;
 sector S[4];
+time T;
 
 color getColor(int c){
     color returnColor;
@@ -43,6 +44,23 @@ color getColor(int c){
     if(c==8){ returnColor.r=0;   returnColor.g=60;  returnColor.b=130; returnColor.a = 255;}
 
     return returnColor;
+}
+
+void display()
+{int x,y;
+ if(T.fr1 - T.fr2 >= 50)                        //only draw 20 frames/second
+ {
+  clearBackground();
+  movePlayer();
+  draw3D();
+
+  T.fr2 = T.fr1;
+  glutSwapBuffers();
+  glutReshapeWindow(GLSW, GLSH);             //prevent window scaling
+ }
+
+ T.fr1=glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
+ glutPostRedisplay();
 }
 
 int loadSectors[] = {
@@ -248,7 +266,7 @@ int main(int argc, char* argv[]) {
 
             glClear(GL_COLOR_BUFFER_BIT);
             //draw here
-
+            display();
             glFlush();
 
             SDL_GL_SwapWindow( window );

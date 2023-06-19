@@ -30,6 +30,7 @@ math M;
 player P;
 sector S[4];
 time T;
+keys K;
 
 color getColor(int c){
     color returnColor;
@@ -47,12 +48,30 @@ color getColor(int c){
 }
 
 void pixel(int x,int y, int c){
-    color colour = getColor(int c);
+    color colour = getColor(c);
     //alter how pixels are drawn here
     glColor3ub(colour.r, colour.g, colour.b);
     glBegin(GL_POINTS);
     glVertex2i((x * pixelScale) + 2, (y * pixelScale) + 2);
     glEnd();
+}
+
+void movePlayer(){
+ //move up, down, left, right
+ if(K.a ==1 && K.m==0){ P.a -= 4; if(P.a < 0){ P.a += 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.d ==1 && K.m==0){ P.a += 4; if(P.a > 359){ P.a -= 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ int dx = M.sin[P.a] * 10.0;
+ int dy = M.cos[P.a] * 10.0;
+ if(K.w ==1 && K.m==0){ P.pos.x += dx; P.pos.y += dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.s ==1 && K.m==0){ P.pos.x -= dx; P.pos.y -= dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ //strafe left, right
+ if(K.sr==1){ P.pos.x -= dy; P.pos.y += dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.sl==1){ P.pos.x += dy; P.pos.y -= dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ //move up, down, look up, look down
+ if(K.a==1 && K.m==1){ P.l -= 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.d==1 && K.m==1){ P.l += 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.w==1 && K.m==1){ P.pos.z += 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.s==1 && K.m==1){ P.pos.z -= 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
 }
 
 void clearBackground(){     //clear background color
@@ -64,8 +83,98 @@ void clearBackground(){     //clear background color
     }
 }
 
+void draw3D(){
+    int s, w;
+    int loop;
+    int wx[4], wy[4], wz[4];                //local xyz variables
+    float CS = M.cos[P.a], SN = M.sin[P.a]; //sin/cos values based on player rotation
+    //order sectors by distance
+    for(s = 0; s < numSect - 1; s++){
+        for(w = 0; w < numSect - s - 1; w++){
+            if(S[w].dist < S[w + 1].dist){
+                sector st = S[w];
+                S[w] = S[w + 1];
+                S[w + 1] = st;
+            }
+        }
+    }
+    //draw sectors
+    for(s = 0; s < numSect; s++){
+        S[s].dist = 0;                      //clears distance
+        if(P.pos.z < S[s].floor){
+            S[s].surface = 1;               //bottom surface
+        }
+        else if(P.pos.z > S[s].ceiling){
+            S[s].surface = 2;               //top surface
+        }
+        else{
+            S[s].surface = 0;               //no surface
+        }
+        for(loop = 0; loop < 2; loop++){
+            for(w = 0; w < S[s].numWalls; w++){
+                //offset bottom 2 points by player
+                int x1 = S[s].walls[w].a.x - P.pos.x, y1 = S[s].walls[w].a.y - P.pos.y;
+                int x2 = S[s].walls[w].b.x - P.pos.x, y2 = S[s].walls[w].b.y - P.pos.y;
+                if(loop == 0){
+                    int swp = x1;
+                        x1 = x2;
+                        x2 = swp;
+
+                        swp = y1;
+                        y1 = y2;
+                        y2 = swp;
+                }
+                //world X position
+                wx[0] = (x1 * CS) - (y1 * SN);
+                wx[1] = (x2 * CS) - (y2 * SN);
+                wx[2] = wx[0];                          //top line has same x
+                wx[3] = wx[1];
+                //world Y position
+                wy[0] = (y1 * CS) + (x1 * SN);
+                wy[1] = (y2 * CS) + (x2 * SN);
+                wy[2] = wy[0];                          //top line has same y
+                wy[3] = wy[1];
+                S[s].dist += dist(0, 0, (wx[0] + wx[1]) / 2, wy[0] + wy[1] / 2); //store this wall distance
+                //world Z height
+                wz[0] = S[s].floor - P.pos.z + ((P.l * wy[0]) / 32.0);
+                wz[1] = S[s].floor - P.pos.z + ((P.l * wy[1]) / 32.0);
+                wz[2] = wz[0] + S[s].ceiling;                     //top line has new z
+                wz[3] = wz[1] + S[s].ceiling;
+                //dont draw if behind player
+                if(wy[0] < 1 && wy[1] < 1){
+                    continue;                             //wall behind player, don't draw
+                }
+                //point 1 behind player, clip
+                if(wy[0] < 1){
+                    clipBehindPlayer(&wx[0], &wy[0], &wz[0], wx[1], wy[1], wz[1]);  //bottom line
+                    clipBehindPlayer(&wx[2], &wy[2], &wz[2], wx[3], wy[3], wz[3]);  //top line
+                }
+                //point 2 behind player, clip
+                if(wy[1] < 1){
+                    clipBehindPlayer(&wx[1], &wy[1], &wz[1], wx[0], wy[0], wz[0]);  //bottom line
+                    clipBehindPlayer(&wx[3], &wy[3], &wz[3], wx[2], wy[2], wz[2]);  //top line
+                }
+
+                //screen x, screen y position
+                wx[0] = wx[0] * 200 / wy[0] + SW2;
+                wy[0] = wz[0] * 200 / wy[0] + SH2;
+                wx[1] = wx[1] * 200 / wy[1] + SW2;
+                wy[1] = wz[1] * 200 / wy[1] + SH2;
+                wx[2] = wx[2] * 200 / wy[2] + SW2;
+                wy[2] = wz[2] * 200 / wy[2] + SH2;
+                wx[3] = wx[3] * 200 / wy[3] + SW2;
+                wy[3] = wz[3] * 200 / wy[3] + SH2;
+                //draw points
+                drawWall(wx[0], wx[1], wy[0], wy[1], wy[2], wy[3], S[s].walls[w].wallColor, s);
+            }
+            S[s].dist /= (0 - S[s].numWalls);    //find average sector distance
+            S[s].surface *= -1;             //flip to negative to draw surface
+        }
+    }
+}
+
 void display(){
-    int x,y;
+    int x, y;
     if(T.fr1 - T.fr2 >= 50){                        //only draw 20 frames/second
         clearBackground();
         movePlayer();
@@ -120,7 +229,7 @@ bool gameInit(){
         M.sin[x] = sin(x/180.0 * M_PI);
     }
 
-    P.xyz.x = 70.0f; P.xyz.y = 110.0f; P.xyz.z = 20.0f; P.a = 0; P.l = 0;
+    P.pos.x = 70.0f; P.pos.y = 110.0f; P.pos.z = 20.0f; P.a = 0; P.l = 0;
 
     int v1 = 0, v2 = 0;
     for(int s = 0; s < numSect; s++){

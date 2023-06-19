@@ -1,10 +1,7 @@
 #ifndef DATA_TYPES_H_INCLUDED
 #define DATA_TYPES_H_INCLUDED
 
-
-
 #endif // DATA_TYPES_H_INCLUDED
-
 
 const int MAX_RAY_DIST = 128;
 
@@ -46,13 +43,21 @@ typedef struct {
     int numWalls;
     float floor;
     float ceiling;
+    int dist;
     color floorColor;
     color ceilingColor;
+    int surface;
 }sector;
 
 typedef struct{
-    vector3 xyz;        //player position. Z is up
+    vector3 pos;        //player position. Z is up
     int a;              //player angle of rotation left right
     int l;              //variable to look up and down
 }player;
+
+typedef struct{
+ int w,s,a,d;           //move up, down, left, right
+ int sl,sr;             //strafe left, right
+ int m;                 //move up, down, look up, down
+}keys;
 

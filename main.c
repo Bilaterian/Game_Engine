@@ -12,9 +12,6 @@
 SDL_Window* window = NULL;
 SDL_GLContext context;
 
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
 math M;
 player P;
 sector S[4];
@@ -39,10 +36,15 @@ color getColor(int c){
 void pixel(int x,int y, color c){
     //alter how pixels are drawn here
     glColor3ub(c.r, c.g, c.b);
-    glBegin(GL_POINTS);
-    glVertex2i((x * 4) + 2, (y * 4) + 2);
+    float x1 = (float)(x - (GLSW / 2)) / (float)GLSW * 2;
+    float y1 = (float)(y - (GLSH / 2)) / (float)GLSH * 2;
+    //printf("%d %d", x1, y1);
+    glBegin(GL_QUADS);
+        glVertex2f( x1, y1 );
+        glVertex2f( x1 + pixLengthx, y1 );
+        glVertex2f( x1 + pixLengthx, y1 + pixLengthy);
+        glVertex2f( x1, y1 + pixLengthy );
     glEnd();
-    glFlush();
 }
 
 void movePlayer(){
@@ -65,9 +67,9 @@ void movePlayer(){
 
 void clearBackground(){     //clear background color
     int x, y;
-    for(y=0;y<120;y++){
-        for(x=0;x<160;x++){
-            pixel(x,y,getColor(8));
+    for(y=0;y<GLSH;y++){
+        for(x=0;x<GLSW;x++){
+             pixel(x,y,getColor(8));
         }
     }
 }
@@ -244,7 +246,7 @@ void draw3D(){
 
 void display(){
     int x, y;
-    if(T.fr1 - T.fr2 >= 50){                        //only draw 20 frames/second
+    if(T.fr1 - T.fr2 >= 100){                        //only draw 20 frames/second
         clearBackground();
         //movePlayer();
         //draw3D();
@@ -257,6 +259,7 @@ void display(){
     T.fr1 = SDL_GetTicks();
     //T.fr1 = glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
     //glutPostRedisplay();
+    printf("%d \n", T.fr1 - T.fr2);
 }
 
 void KeysDown(unsigned char key,int x,int y)
@@ -397,7 +400,8 @@ bool init(){
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 
         //Create window
-        window = SDL_CreateWindow( "bsp renderer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+        window = SDL_CreateWindow( "bsp renderer", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                                    GLSW, GLSH, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
         if( window == NULL ){
             printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
             success = false;
@@ -481,14 +485,14 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-            glClear(GL_COLOR_BUFFER_BIT);
+            //glClear(GL_COLOR_BUFFER_BIT);
             //draw here
             display();
-            glFlush();
 
             SDL_GL_SwapWindow( window );
         }
     }
+
     close();
 	return 0;
 }

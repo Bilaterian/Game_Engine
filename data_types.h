@@ -11,6 +11,8 @@
 #define pixelScale 4/res                    //OpenGL pixel scale
 #define GLSW       (SW*pixelScale)          //OpenGL window width
 #define GLSH       (SH*pixelScale)          //OpenGL window height
+#define pixLengthx 16.0/GLSW
+#define pixLengthy 16.0/GLSH
 #define numSect    4
 #define numWall    16
 

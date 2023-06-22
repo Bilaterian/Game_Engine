@@ -49,26 +49,26 @@ void pixel(int x,int y, color c){
 
 void movePlayer(){
  //move up, down, left, right
- if(K.a ==1 && K.m==0){ P.a -= 4; if(P.a < 0){ P.a += 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.d ==1 && K.m==0){ P.a += 4; if(P.a > 359){ P.a -= 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.a == 1 && K.m == 0){ P.a -= 4; if(P.a < 0){ P.a += 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.d == 1 && K.m == 0){ P.a += 4; if(P.a > 359){ P.a -= 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
  int dx = M.sin[P.a] * 10.0;
  int dy = M.cos[P.a] * 10.0;
- if(K.w ==1 && K.m==0){ P.pos.x += dx; P.pos.y += dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.s ==1 && K.m==0){ P.pos.x -= dx; P.pos.y -= dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.w == 1 && K.m == 0){ P.pos.x += dx; P.pos.y += dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.s == 1 && K.m == 0){ P.pos.x -= dx; P.pos.y -= dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
  //strafe left, right
- if(K.sr==1){ P.pos.x -= dy; P.pos.y += dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.sl==1){ P.pos.x += dy; P.pos.y -= dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.sr == 1){ P.pos.x -= dy; P.pos.y += dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.sl == 1){ P.pos.x += dy; P.pos.y -= dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
  //move up, down, look up, look down
- if(K.a==1 && K.m==1){ P.l -= 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.d==1 && K.m==1){ P.l += 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.w==1 && K.m==1){ P.pos.z += 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.s==1 && K.m==1){ P.pos.z -= 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.a == 1 && K.m == 1){ P.l -= 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.d == 1 && K.m == 1){ P.l += 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.w == 1 && K.m == 1){ P.pos.z += 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.s == 1 && K.m == 1){ P.pos.z -= 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
 }
 
 void clearBackground(){     //clear background color
     int x, y;
-    for(y=0;y<GLSH;y++){
-        for(x=0;x<GLSW;x++){
+    for(y=0;y<GLSH;y += 8){
+        for(x=0;x<GLSW;x += 8){
              pixel(x,y,getColor(8));
         }
     }
@@ -238,7 +238,9 @@ void draw3D(){
                 //draw points
                 drawWall(wx[0], wx[1], wy[0], wy[1], wy[2], wy[3], S[s].walls[w].wallColor, s);
             }
-            S[s].dist /= (0 - S[s].numWalls);    //find average sector distance
+            if(S[s].dist != 0){
+                S[s].dist = S[s].dist / (0 - S[s].numWalls);    //find average sector distance
+            }
             S[s].surface *= -1;             //flip to negative to draw surface
         }
     }
@@ -248,8 +250,8 @@ void display(){
     int x, y;
     if(T.fr1 - T.fr2 >= 100){                        //only draw 20 frames/second
         clearBackground();
-        //movePlayer();
-        //draw3D();
+        movePlayer();
+        draw3D();
 
         T.fr2 = T.fr1;
         //glutSwapBuffers();
@@ -259,7 +261,6 @@ void display(){
     T.fr1 = SDL_GetTicks();
     //T.fr1 = glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
     //glutPostRedisplay();
-    printf("%d \n", T.fr1 - T.fr2);
 }
 
 void KeysDown(unsigned char key,int x,int y)
@@ -441,7 +442,6 @@ void close(){
 }
 
 int main(int argc, char* argv[]) {
-
     if(!init()){
         printf("Failed to initialize!\n");
     }

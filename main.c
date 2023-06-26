@@ -442,6 +442,7 @@ void close(){
 }
 
 int main(int argc, char* argv[]) {
+    int i = 1;
     if(!init()){
         printf("Failed to initialize!\n");
     }
@@ -485,7 +486,6 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-            //glClear(GL_COLOR_BUFFER_BIT);
             //draw here
             display();
 

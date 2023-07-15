@@ -47,22 +47,30 @@ void pixel(int x,int y, color c){
     glEnd();
 }
 
+void printKeys(){
+    printf("%d %d %d %d %d %d %d\n", K.w, K.s, K.a, K.d, K.sl, K.sr, K.m);
+}
+
+void printPlayer(){
+    printf("%lf %lf %lf %d %d\n", P.pos.x, P.pos.y, P.pos.z, P.a, P.l);
+}
+
 void movePlayer(){
  //move up, down, left, right
- if(K.a == 1 && K.m == 0){ P.a -= 4; if(P.a < 0){ P.a += 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.d == 1 && K.m == 0){ P.a += 4; if(P.a > 359){ P.a -= 360;} printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.a == 1 && K.m == 0){ P.a -= 4; if(P.a < 0){ P.a += 360;}} //left
+ if(K.d == 1 && K.m == 0){ P.a += 4; if(P.a > 359){ P.a -= 360;}} //right
  int dx = M.sin[P.a] * 10.0;
  int dy = M.cos[P.a] * 10.0;
- if(K.w == 1 && K.m == 0){ P.pos.x += dx; P.pos.y += dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.s == 1 && K.m == 0){ P.pos.x -= dx; P.pos.y -= dy; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.w == 1 && K.m == 0){ P.pos.x += dx; P.pos.y += dy;} //forward
+ if(K.s == 1 && K.m == 0){ P.pos.x -= dx; P.pos.y -= dy;} //backward
  //strafe left, right
- if(K.sr == 1){ P.pos.x -= dy; P.pos.y += dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.sl == 1){ P.pos.x += dy; P.pos.y -= dx; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.sr == 1){ P.pos.x -= dy; P.pos.y += dx;}
+ if(K.sl == 1){ P.pos.x += dy; P.pos.y -= dx;}
  //move up, down, look up, look down
- if(K.a == 1 && K.m == 1){ P.l -= 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.d == 1 && K.m == 1){ P.l += 1; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.w == 1 && K.m == 1){ P.pos.z += 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
- if(K.s == 1 && K.m == 1){ P.pos.z -= 4; printf("%lf %lf %lf %d\n", P.pos.x, P.pos.y, P.pos.z, P.a);}
+ if(K.a == 1 && K.m == 1){ P.l -= 1;}
+ if(K.d == 1 && K.m == 1){ P.l += 1;}
+ if(K.w == 1 && K.m == 1){ P.pos.z += 4;}
+ if(K.s == 1 && K.m == 1){ P.pos.z -= 4;}
 }
 
 void clearBackground(){     //clear background color
@@ -140,16 +148,16 @@ void drawWall(int x1, int x2, int b1, int b2, int t1, int t2, color c, int s){
         }
         if(S[s].surface == -1){ //bottom
             for(y = S[s].surf[x]; y < y1; y++){
-                pixel(x, y, S[s].floorColor);
+                pixel(x * 4, y * 4, S[s].floorColor);
             }
         }
         if(S[s].surface == -2){ //top
             for(y = y1; y < S[s].surf[x]; y++){
-                pixel(x, y, S[s].ceilingColor);
+                pixel(x * 4, y * 4, S[s].ceilingColor);
             }
         }
         for(y = y1; y < y2; y++){
-            pixel(x, y, c);
+            pixel(x * 4, y * 4, c);
         }
     }
 }
@@ -262,28 +270,6 @@ void display(){
     //T.fr1 = glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
     //glutPostRedisplay();
 }
-
-void KeysDown(unsigned char key,int x,int y)
-{
- if(key=='w'==1){ K.w =1;}
- if(key=='s'==1){ K.s =1;}
- if(key=='a'==1){ K.a =1;}
- if(key=='d'==1){ K.d =1;}
- if(key=='m'==1){ K.m =1;}
- if(key==','==1){ K.sr=1;}
- if(key=='.'==1){ K.sl=1;}
-}
-void KeysUp(unsigned char key,int x,int y)
-{
- if(key=='w'==1){ K.w =0;}
- if(key=='s'==1){ K.s =0;}
- if(key=='a'==1){ K.a =0;}
- if(key=='d'==1){ K.d =0;}
- if(key=='m'==1){ K.m =0;}
- if(key==','==1){ K.sr=0;}
- if(key=='.'==1){ K.sl=0;}
-}
-
 int loadSectors[] = {
 //wall start, wall end, z1 height, z2 height, floor color, ceiling color
 0,  4,  0,  40, 2,  3,  //sector 1
@@ -382,6 +368,9 @@ bool initGL(){
         //printf( "Error initializing OpenGL! %s\n", gluErrorString( error ) );
         success = false;
     }
+    if(gameInit() == false){
+        return success;
+    }
 
     return success;
 }
@@ -459,29 +448,54 @@ int main(int argc, char* argv[]) {
                     quit = true;
                 }
                 else if (event.type == SDL_KEYDOWN) {
-                    switch (event.key.keysym.sym) {//will be used for camera movement
-                        //int w,s,a,d;           //SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT
-                        //int sl,sr;             //strafe left, right
-                        //int m;                 //move up, down, look up, down
-                        case SDLK_UP:
-
-                        break;
-                        case SDLK_DOWN:
-
-                        break;
-                        case SDLK_LEFT:
-
-                        break;
-                        case SDLK_RIGHT:
-
-                        break;
-
-                        case SDLK_LESS:
-
-                        break;
-                        case SDLK_GREATER:
-
-                        break;
+                    SDL_Keycode keycode = event.key.keysym.sym;
+                    if (keycode == SDLK_w) {
+                        K.w = 1;
+                    }
+                    if (keycode == SDLK_a) {
+                        K.a = 1;
+                    }
+                    if (keycode == SDLK_s) {
+                        K.s = 1;
+                    }
+                    if (keycode == SDLK_d) {
+                        K.d = 1;
+                    }
+                    if (keycode == SDLK_m) {
+                        K.m = 1;
+                    }
+                    if (keycode == SDLK_COMMA){
+                        K.sr = 1;
+                    }
+                    if (keycode == SDLK_PERIOD) {
+                        K.sl = 1;
+                    }
+                    if (keycode == SDLK_ESCAPE) {
+                        quit = true;
+                    }
+                }
+                else if (event.type == SDL_KEYUP) {
+                    SDL_Keycode keycode = event.key.keysym.sym;
+                    if (keycode == SDLK_w) {
+                        K.w = 0;
+                    }
+                    if (keycode == SDLK_a) {
+                        K.a = 0;
+                    }
+                    if (keycode == SDLK_s) {
+                        K.s = 0;
+                    }
+                    if (keycode == SDLK_d) {
+                        K.d = 0;
+                    }
+                    if (keycode == SDLK_m) {
+                        K.m = 0;
+                    }
+                    if (keycode == SDLK_COMMA){
+                        K.sr = 0;
+                    }
+                    if (keycode == SDLK_PERIOD) {
+                        K.sl = 0;
                     }
                 }
             }

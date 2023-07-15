@@ -170,7 +170,7 @@ void draw3D(){
     //order sectors by distance
     for(s = 0; s < numSect - 1; s++){
         for(w = 0; w < numSect - s - 1; w++){
-            if(S[w].dist < S[w + 1].dist){
+            if(S[w].dist > S[w + 1].dist){
                 sector st = S[w];
                 S[w] = S[w + 1];
                 S[w + 1] = st;
@@ -256,7 +256,7 @@ void draw3D(){
 
 void display(){
     int x, y;
-    if(T.fr1 - T.fr2 >= 100){                        //only draw 20 frames/second
+    if(T.fr1 - T.fr2 >= 20){                        //only draw 20 frames/second
         clearBackground();
         movePlayer();
         draw3D();
